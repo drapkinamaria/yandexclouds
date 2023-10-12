@@ -1,0 +1,35 @@
+openapi: 3.0.0
+info:
+  title: for-serverless-guestlist
+  version: 1.0.0
+paths:
+  /:
+    get:
+      x-yc-apigateway-integration:
+        type: object_storage
+        bucket:             storage-for-serverless-guestlist        # <-- имя бакета
+        object:             index.html          # <-- имя html-файла
+        presigned_redirect: false
+        service_account:    ajeb5ovd7iailj0k9aj7 # <-- идентификатор сервисного аккаунта
+      operationId: static
+  /save_full_name:
+    post:
+      x-yc-apigateway-integration:
+        type: cloud_functions
+        function_id:  d4e93ipa8o0k4gfedd0d               # <-- идентификатор функции
+      operationId: save_full_name
+  /r/{id}:
+    get:
+      x-yc-apigateway-integration:
+        type: cloud_functions
+        function_id:  d4e93ipa8o0k4gfedd0d               # <-- идентификатор функции
+      operationId: redirect
+      parameters:
+        - description: id of the name
+          explode: false
+          in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          style: simple
